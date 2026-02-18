@@ -1,0 +1,5 @@
+metric,value,display,format,run_timestamp
+Total Revenue,10587015.73,"$10,587,015.73",currency,20260216_062231
+Avg Order Value,20.376142473040673,$20.38,currency,20260216_062231
+Total Customers,4373.0,"4,373",count,20260216_062231
+Total Transactions,531223.0,"531,223",count,20260216_062231
