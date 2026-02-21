@@ -619,7 +619,7 @@ def download_csv(n_clicks, selected_country, start_date, end_date):
     filename = f"sales_data_{selected_country}_{start_date[:10]}_to_{end_date[:10]}.csv"
     return dcc.send_data_frame(df.to_csv, filename, index=False)
 # For local development - simpler settings
-app = Dash(__name__)  #  Dash app
+
 server = app.server   #
 if __name__ == "__main__":
     import os
