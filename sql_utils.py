@@ -6,11 +6,10 @@ import pandas as pd
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 
-# =============================================================================
 # CONFIGURATION
 # Load environment variables from .env file (for local development)
 # On Render, these are set directly in the dashboard environment settings
-# =============================================================================
+
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -24,9 +23,8 @@ if not DATABASE_URL:
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
 
-# =============================================================================
 # DATABASE CONNECTION
-# =============================================================================
+
 
 def get_engine():
     """
@@ -51,11 +49,9 @@ def run_query(query, engine, params=None):
     with engine.connect() as conn:
         return pd.read_sql(query, conn)
 
-
-# =============================================================================
 # CSV DATA LOADING
 # Used when initially uploading data to the database
-# =============================================================================
+
 
 def load_csv_data(cleaned_path, customer_path):
     """
@@ -81,10 +77,10 @@ def load_csv_data(cleaned_path, customer_path):
     return cleaned_data, customer_summary
 
 
-# =============================================================================
+
 # TABLE CREATION
 # Creates tables in PostgreSQL if they don't already exist
-# =============================================================================
+
 
 def create_tables(engine):
     """
@@ -136,10 +132,8 @@ def create_tables(engine):
 
         conn.commit()
 
-
-# =============================================================================
 # TABLE UTILITIES
-# =============================================================================
+
 
 def clear_table(engine, table_name):
     """
