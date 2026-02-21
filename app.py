@@ -626,7 +626,7 @@ if __name__ == "__main__":
     
     # Get settings from environment variables with defaults
     debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
-    port = int(os.getenv('PORT', 8080))
+    port = int(os.getenv('PORT', 10000))
     host = os.getenv('HOST', '0.0.0.0')
     
     app.run(debug=debug_mode, host=host, port=port)
