@@ -7,11 +7,24 @@ from sqlalchemy import create_engine, text
 
 # CONFIGURATION
 load_dotenv()
+
 DB_USERNAME = os.getenv("DB_USERNAME")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST     = os.getenv("DB_HOST")
-DB_PORT     = os.getenv("DB_PORT")
+DB_PORT     = os.getenv("DB_PORT", "5432")
 DB_NAME     = os.getenv("DB_NAME")
+
+# Validate all required env vars are present
+missing = [var for var, val in {
+    "DB_USERNAME": DB_USERNAME,
+    "DB_PASSWORD": DB_PASSWORD,
+    "DB_HOST": DB_HOST,
+    "DB_PORT": DB_PORT,
+    "DB_NAME": DB_NAME
+}.items() if not val]
+
+if missing:
+    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing)}")
 
 DB_PASSWORD_ENCODED = urllib.parse.quote_plus(DB_PASSWORD)
 DB_URI = f"postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD_ENCODED}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
