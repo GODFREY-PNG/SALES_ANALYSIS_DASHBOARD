@@ -1,33 +1,21 @@
 # sql_utils.py
 import os
 import pandas as pd
-import urllib.parse
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 
 # CONFIGURATION
 load_dotenv()
 
-DB_USERNAME = os.getenv("DB_USERNAME")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST     = os.getenv("DB_HOST")
-DB_PORT     = os.getenv("DB_PORT", "5432")
-DB_NAME     = os.getenv("DB_NAME")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Validate all required env vars are present
-missing = [var for var, val in {
-    "DB_USERNAME": DB_USERNAME,
-    "DB_PASSWORD": DB_PASSWORD,
-    "DB_HOST": DB_HOST,
-    "DB_PORT": DB_PORT,
-    "DB_NAME": DB_NAME
-}.items() if not val]
+if not DATABASE_URL:
+    raise EnvironmentError("DATABASE_URL environment variable is not set!")
 
-if missing:
-    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing)}")
+# Fix prefix for SQLAlchemy compatibility
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
 
-DB_PASSWORD_ENCODED = urllib.parse.quote_plus(DB_PASSWORD)
-DB_URI = f"postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD_ENCODED}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # DATABASE CONNECTION
 def get_engine():
