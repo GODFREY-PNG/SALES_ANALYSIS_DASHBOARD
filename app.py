@@ -28,7 +28,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], meta_tags=[
 ])
 app.title = "Enhanced Sales Dashboard"
 
-# Custom CSS for card styling + mobile responsiveness
+# Custom CSS for card styling
 CARD_STYLE = {
     'padding': '12px',
     'margin': '6px',
@@ -37,93 +37,8 @@ CARD_STYLE = {
     'background-color': 'white'
 }
 
-MOBILE_CSS = """
-/* ── Global mobile resets ── */
-* { box-sizing: border-box; }
-
-body {
-    -webkit-text-size-adjust: 100%;
-    overflow-x: hidden;
-}
-
-/* ── Viewport meta already injected; ensure no horizontal scroll ── */
-.container-fluid { padding-left: 8px !important; padding-right: 8px !important; }
-
-/* ── KPI cards: stack 2-per-row on small screens ── */
-@media (max-width: 575px) {
-
-    /* Two KPI columns side-by-side */
-    .kpi-col {
-        flex: 0 0 50% !important;
-        max-width: 50% !important;
-        padding: 3px !important;
-    }
-
-    /* Smaller headings inside KPI cards */
-    .kpi-col h5 { font-size: 0.72rem !important; margin-bottom: 2px; }
-    .kpi-col h4 { font-size: 1rem !important; margin: 0; }
-
-    /* Full-width filter & chart columns */
-    .filter-col, .chart-col {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-        padding: 3px !important;
-    }
-
-    /* Reduce card padding on mobile */
-    .card { padding: 10px !important; margin: 4px !important; }
-
-    /* Date picker: prevent overflow */
-    .DateRangePickerInput { flex-wrap: wrap; }
-    .DateInput { width: 100% !important; }
-
-    /* Plotly graphs: allow full width */
-    .js-plotly-plot, .plotly { width: 100% !important; }
-
-    /* Radio items: stack vertically */
-    .form-check-inline { display: block !important; margin-bottom: 4px; }
-
-    /* Dashboard title */
-    h1 { font-size: 1.3rem !important; }
-
-    /* Download button full width */
-    #download-button { width: 100%; }
-}
-
-/* ── Medium screens (tablets): 2-column KPI grid ── */
-@media (min-width: 576px) and (max-width: 767px) {
-    .kpi-col {
-        flex: 0 0 50% !important;
-        max-width: 50% !important;
-    }
-    .filter-col, .chart-col {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-    }
-    h1 { font-size: 1.5rem !important; }
-}
-
-/* ── Plotly modebar: hide on touch to save space ── */
-@media (max-width: 767px) {
-    .modebar { display: none !important; }
-    .plotly .main-svg { border-radius: 6px; }
-}
-
-/* ── Touch-friendly dropdowns & inputs ── */
-.Select-control, .DateInput_input {
-    min-height: 44px !important;
-    font-size: 1rem !important;
-}
-
-/* ── Scrollable product dropdown on mobile ── */
-.Select-menu-outer { max-height: 200px !important; overflow-y: auto; }
-"""
-
 # Layout
 app.layout = dbc.Container([
-
-    # Inject mobile CSS
-    html.Style(MOBILE_CSS),
 
     # Header
     dbc.Row([
@@ -170,7 +85,7 @@ app.layout = dbc.Container([
 
     # Main KPIs Row 1 — 2 cols on mobile, 4 on desktop
     dbc.Row([
-        dbc.Col(html.Div(id='total-revenue-card',     style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
+        dbc.Col(html.Div(id='total-revenue-card',      style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
         dbc.Col(html.Div(id='total-transactions-card', style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
         dbc.Col(html.Div(id='avg-order-card',          style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
         dbc.Col(html.Div(id='total-customers-card',    style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
@@ -178,9 +93,9 @@ app.layout = dbc.Container([
 
     # Main KPIs Row 2
     dbc.Row([
-        dbc.Col(html.Div(id='return-rate-card',         style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
-        dbc.Col(html.Div(id='items-per-trans-card',     style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
-        dbc.Col(html.Div(id='revenue-growth-card',      style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
+        dbc.Col(html.Div(id='return-rate-card',          style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
+        dbc.Col(html.Div(id='items-per-trans-card',      style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
+        dbc.Col(html.Div(id='revenue-growth-card',       style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
         dbc.Col(html.Div(id='revenue-per-customer-card', style=CARD_STYLE), xs=6, md=3, className="kpi-col"),
     ], className="mb-2 g-1"),
 
@@ -231,7 +146,7 @@ app.layout = dbc.Container([
         )
     ], className="mb-2 g-1"),
 
-    # Charts Row 1 — full width on mobile
+    # Charts Row 1
     dbc.Row([
         dbc.Col(dcc.Graph(id='monthly-revenue-graph', config={'displayModeBar': False, 'responsive': True}),
                 xs=12, md=6, className="chart-col"),
@@ -278,7 +193,7 @@ def get_date_condition(start_date, end_date):
     return ""
 
 
-# ── Mobile-friendly chart layout helper ──
+# Mobile-friendly chart layout helper
 def mobile_layout(fig, title=""):
     fig.update_layout(
         title=dict(text=title, font=dict(size=13)),
@@ -291,7 +206,7 @@ def mobile_layout(fig, title=""):
     return fig
 
 
-# 1️ Update all KPIs with date filter
+# 1 Update all KPIs with date filter
 @app.callback(
     Output('total-revenue-card', 'children'),
     Output('total-transactions-card', 'children'),
@@ -377,7 +292,6 @@ def update_all_kpis(selected_country, start_date, end_date):
 
     revenue_per_customer = total_revenue / total_customers if total_customers > 0 else 0
 
-    # Compact KPI card helper
     def kpi(icon, label, value, color=None):
         val_style = {'margin': 0, 'color': color} if color else {'margin': 0}
         return [
@@ -386,18 +300,18 @@ def update_all_kpis(selected_country, start_date, end_date):
         ]
 
     return (
-        kpi("💰", "Revenue",     f"${total_revenue:,.0f}"),
+        kpi("💰", "Revenue",      f"${total_revenue:,.0f}"),
         kpi("📊", "Transactions", f"{total_transactions:,}"),
-        kpi("🛒", "Avg Order",   f"${avg_order:,.0f}"),
-        kpi("👥", "Customers",   f"{total_customers:,}"),
-        kpi("↩️", "Return Rate", f"{return_rate:.1f}%"),
-        kpi("📦", "Items/Trans", f"{avg_items:.1f}"),
-        kpi("📈", "Growth",      growth_display, growth_color),
+        kpi("🛒", "Avg Order",    f"${avg_order:,.0f}"),
+        kpi("👥", "Customers",    f"{total_customers:,}"),
+        kpi("↩️", "Return Rate",  f"{return_rate:.1f}%"),
+        kpi("📦", "Items/Trans",  f"{avg_items:.1f}"),
+        kpi("📈", "Growth",       growth_display, growth_color),
         kpi("💵", "Rev/Customer", f"${revenue_per_customer:,.0f}"),
     )
 
 
-# 2️ Update Monthly Revenue
+# 2 Update Monthly Revenue
 @app.callback(
     Output('monthly-revenue-graph', 'figure'),
     Input('country-dropdown', 'value'),
@@ -436,7 +350,7 @@ def update_monthly_revenue(selected_country, start_date, end_date, compare):
     return fig
 
 
-# 3️ Sales by Day of Week
+# 3 Sales by Day of Week
 @app.callback(
     Output('sales-by-day-graph', 'figure'),
     Input('country-dropdown', 'value'),
@@ -462,7 +376,6 @@ def sales_by_day(selected_country, start_date, end_date):
     if df.empty:
         return px.bar(title="No data available")
 
-    # Trim whitespace from day names for mobile
     df['day_name'] = df['day_name'].str.strip().str[:3]
     fig = px.bar(df, x='day_name', y='revenue', text_auto='.2s')
     fig = mobile_layout(fig, f'Sales by Day — {selected_country}')
@@ -470,7 +383,7 @@ def sales_by_day(selected_country, start_date, end_date):
     return fig
 
 
-# 4️ Sales Heatmap (Hour vs Day)
+# 4 Sales Heatmap (Hour vs Day)
 @app.callback(
     Output('sales-heatmap', 'figure'),
     Input('country-dropdown', 'value'),
@@ -525,7 +438,7 @@ def sales_heatmap(selected_country, start_date, end_date):
         return fig
 
 
-# 5️ Customer Segments (RFM-style)
+# 5 Customer Segments (RFM-style)
 @app.callback(
     Output('customer-segments', 'figure'),
     Input('country-dropdown', 'value'),
@@ -562,7 +475,7 @@ def customer_segments(selected_country, start_date, end_date):
     return fig
 
 
-# 6️ Geographic Map
+# 6 Geographic Map
 @app.callback(
     Output('geographic-map', 'figure'),
     Input('date-range', 'start_date'),
@@ -599,12 +512,7 @@ def geographic_map(start_date, end_date):
                             hover_name='country',
                             color_continuous_scale='Viridis')
         fig = mobile_layout(fig, 'Global Revenue Distribution')
-        # Compact geo projection for mobile
-        fig.update_geos(
-            showframe=False,
-            showcoastlines=True,
-            projection_type='natural earth'
-        )
+        fig.update_geos(showframe=False, showcoastlines=True, projection_type='natural earth')
         fig.update_layout(
             coloraxis_colorbar=dict(thickness=10, len=0.5, title=dict(text='$', side='right'))
         )
@@ -614,7 +522,7 @@ def geographic_map(start_date, end_date):
         return go.Figure()
 
 
-# 7️ Top Products Bar
+# 7 Top Products Bar
 @app.callback(
     Output('top-products-bar', 'figure'),
     Input('country-dropdown', 'value'),
@@ -656,7 +564,6 @@ def update_top_products(selected_country, selected_products, start_date, end_dat
     if df.empty:
         return px.bar(title="No product data available")
 
-    # Truncate long product names for mobile
     df['description'] = df['description'].str[:30]
     fig = px.bar(df, x='revenue', y='description', orientation='h', text_auto='.2s')
     fig = mobile_layout(fig, f'Top Products — {selected_country}')
@@ -664,7 +571,7 @@ def update_top_products(selected_country, selected_products, start_date, end_dat
     return fig
 
 
-# 8️ Quick filter callback
+# 8 Quick filter callback
 @app.callback(
     Output('date-range', 'start_date'),
     Output('date-range', 'end_date'),
@@ -685,7 +592,7 @@ def update_date_range(quick_filter):
     return start_date, end_date
 
 
-# 9️ Download CSV callback
+# 9 Download CSV callback
 @app.callback(
     Output("download-dataframe-csv", "data"),
     Input("download-button", "n_clicks"),
